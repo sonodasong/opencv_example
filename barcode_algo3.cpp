@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 		//imshow("sobel", sobel);
 
 		if (block == 0) {
-			adaptiveThreshold(out, at, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, block * 2 + 3, -offset);
+			adaptiveThreshold(out, at, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, -offset);
 			Laplacian(at, at, CV_8U);
 		}
 		else {

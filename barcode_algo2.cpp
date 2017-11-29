@@ -19,42 +19,39 @@ int main(int argc, char** argv) {
 	Mat out, at, sobel, kernel;
 	vector<vector<Point> > contours;
 	VideoCapture cap;
-	int ratio1 = 0, ratio2 = 0, offset = 50;
+	int ratio1 = 5, ratio2 = 10, offset = 15;
 	cap.open(0);
 	namedWindow("cur", WINDOW_AUTOSIZE);
-	namedWindow("sobel", WINDOW_AUTOSIZE);
-	namedWindow("sobel at", WINDOW_AUTOSIZE);
-	namedWindow("ed", WINDOW_AUTOSIZE);
-	createTrackbar("ratio 1", "sobel at", &ratio1, 50, NULL);
-	createTrackbar("ratio 2", "sobel at", &ratio2, 50, NULL);
-	createTrackbar("offset", "sobel at", &offset, 100, NULL);
+	namedWindow("al", WINDOW_AUTOSIZE);
+	namedWindow("open", WINDOW_AUTOSIZE);
+	namedWindow("close", WINDOW_AUTOSIZE);
+	createTrackbar("ratio 1", "cur", &ratio1, 50, NULL);
+	createTrackbar("ratio 2", "cur", &ratio2, 50, NULL);
+	createTrackbar("offset", "cur", &offset, 100, NULL);
 	while (1) {
 		cap >> out;
 		cvtColor(out, out, CV_BGR2GRAY);
 		imshow("cur", out);
 		//blur(out, out, Size(5, 5));
-		//xySoble(out, sobel);
-		//imshow("sobel", sobel);
 		adaptiveThreshold(out, at, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 3, -offset);
-		imshow("sobel at", at);
+		Laplacian(at, at, CV_8U);
+		imshow("al", at);
 		kernel = getStructuringElement(MORPH_RECT, Size(1, ratio1 + 1));
 		morphologyEx(at, at, MORPH_OPEN, kernel);
-		imshow("sobel", at);
+		imshow("open", at);
 		kernel = getStructuringElement(MORPH_RECT, Size(ratio2 + 1, 1));
 		morphologyEx(at, at, MORPH_CLOSE, kernel);
-		//erode(at, at, kernel, Point(-1, -1), 1);
-		//dilate(at, at, kernel, Point(-1, -1), 1);
 		//findContours(out, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 		//drawContours(cur, contours, -1, Scalar(0, 255, 0, 0), 1, LINE_8);
-		imshow("ed", at);
+		imshow("close", at);
 		if (waitKey(1) == 27) {
 			break;
 		}
 	}
 	destroyWindow("cur");
-	destroyWindow("soble");
-	destroyWindow("soble at");
-	destroyWindow("ed");
+	destroyWindow("al");
+	destroyWindow("open");
+	destroyWindow("close");
 	return 0;
 }
 
